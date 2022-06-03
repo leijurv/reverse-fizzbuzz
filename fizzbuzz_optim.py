@@ -132,8 +132,8 @@ def calcIdx(idx):
 	# we want a character from the range of fizzbuzz where "d"-digit numbers are being printed
 	skipAtBegin, skipAtEnd, groups, ignored, first = precomputedDataForDigits(d)
 	lenOfEachGroup = lenFrom(groupSize, d)
-	extraAtBeginLen = lenOfEachGroup - lenFrom(groupSize - skipAtBegin, d) # this is at most groupSize lines, so, fast to compute
-	extraAtEndLen = lenFrom(skipAtEnd, d) # same here
+	extraAtBeginLen = lenOfEachGroup - lenFrom(groupSize - skipAtBegin, d)
+	extraAtEndLen = lenFrom(skipAtEnd, d)
 	if idx < extraAtBeginLen:
 		return chk(first, first + skipAtBegin)[idx]
 	if idx >= lenForDigits(d) - extraAtEndLen:
