@@ -40,7 +40,7 @@ You've printed out a few terabytes of FizzBuzz, but suddenly, your program crash
 
 Reverse FizzBuzz is the following function: `ReverseFizzBuzz(idx) = chr` means that the `idx`-th character of FizzBuzz is `chr`. See the following example cases:
 
-| `idx`  | `ReverzeFizzBuzz(idx)` should equal |
+| `idx`  | `ReverseFizzBuzz(idx)` should equal |
 | - | - |
 | `0` | `"1"` |
 | `1` | `"\n"` |
