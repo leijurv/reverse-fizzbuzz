@@ -62,6 +62,10 @@ Reverse FizzBuzz is the following function: `ReverseFizzBuzz(idx) = chr` means t
 | `17` | `"i"` |
 | `18` | `"z"` |
 | `19` | `"z"` |
+| ... | ... |
+| `2**500000` | `4` |
+
+Did you know that the 2^500000th character of FizzBuzz is `4`? Now you do.
 
 ## This repo
 
