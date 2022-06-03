@@ -1,6 +1,6 @@
 # Reverse FizzBuzz
 
-Reverse FizzBuzz is the following function: `ReverseFizzBuzz(idx) = chr` means that the `idx`-th character of FizzBuzz is `chr`. See the following example cases:
+`ReverseFizzBuzz(idx) = chr` means that the `idx`-th character of FizzBuzz is `chr`. See the following example cases:
 
 | `idx`  | `ReverseFizzBuzz(idx)` should equal |
 | - | - |
@@ -25,9 +25,11 @@ Reverse FizzBuzz is the following function: `ReverseFizzBuzz(idx) = chr` means t
 | `18` | `"z"` |
 | `19` | `"z"` |
 | ... | ... |
-| `2**500000` | `4` |
+| `10**1000000` | `"7"` |
 
-Did you know that the 2^500000th character of FizzBuzz is `4`? Now you do.
+Did you know that the 10^1000000th character of FizzBuzz is `"7"`? Now you do! (yes, that's 10 to the power of a million, meaning the number "1" followed by a million zeros)
+
+With this repo, you can compute amazing facts like that in a performant manner!
 
 ## Normal FizzBuzz
 
@@ -73,7 +75,9 @@ The simplest possible implementation actually generates the FizzBuzz string up t
 
 `fizzbuzzpop.py` extends the idea to any kind of FizzBuzz. For example, you could add in that any numbers divisible by 7 are "Pop" by uncommenting the relevant line at the top.
 
-`fizzbuzz_optim.py` is the version that's optimized for performance, without becoming TOO complicated (145 lines of code including comments and blanks). On my desktop, it does `calcIdx(2**10000)` in about 0.03 seconds, `calcIdx(2**20000)` in about 0.053 seconds, `calcIdx(2**50000)` in about 0.17 seconds, `calcIdx(2**100000)` in about 0.53 seconds, `calcIdx(2**200000)` in about 1.81 seconds, and `calcIdx(2**500000)` in about 11.3 seconds. (sadly, `calcIdx(2**1000000)` runs out of RAM, please make a PR if you find a way to calculate the 2^1000000th character of FizzBuzz in less than 64GB RAM). This optimization was very interesting, for example I've never before had to cache simple arithmetic operations such as addition, but that's what happens when your integers are tens to hundreds of thousands of bits long.
+`fizzbuzz_optim.py` is the version that's optimized for performance, without becoming TOO complicated (145 lines of code including comments and blanks). This optimization was very interesting, for example I've never before had to cache simple arithmetic operations such as addition, but that's what happens when your integers are tens to hundreds of thousands of bits long. On my desktop, it does `calcIdx(2**10000)` in about 0.03 seconds, `calcIdx(2**20000)` in about 0.053 seconds, `calcIdx(2**50000)` in about 0.17 seconds, `calcIdx(2**100000)` in about 0.53 seconds, `calcIdx(2**200000)` in about 1.81 seconds, and `calcIdx(2**500000)` in about 11.3 seconds. You can go further if you replace both `maxsize=None` with `maxsize=2`, this essentially tells it to throw away work behind it in order to use less RAM (otherwise, I can't get much further than 2^500000 without hitting OOM at 64GB RAM). `calcIdx(2**1000000)` can only be computed this way, took about 25 seconds (it's `"4"`). It reallllly starts to get slow around the 2^2000000 to 2^3000000 range. But that's close to 10 to the 1 million, so I decided to end there (that's roughly 2 to the 3.3 million). So, `calcIdx(10**1000000)` is probably about the limit of it, that came out to `"7"` and took about 5 minutes.
+
+Other than the obvious idea of "don't use Python", some optimization ideas might include specializing for the 3,5 case (meaning, where the group length is always 15 lines), trying to come up with a closed form solution for `lenForDigits` (whether specialized for group length 15 or not), writing out an actual performant edge case for when the index is within 15 lines of a power of ten (currently this case is extremely slow), finding a faster way to do `str(someEnormousNumber)[someBigIndexInTheThousands]` (extracting the `n`th decimal digit), caching more data for every given decimal length, etc. God, maybe even I should consider using some library instead of the builtin integers.
 
 ## Benchmark
 
