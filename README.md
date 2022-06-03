@@ -79,7 +79,7 @@ The simplest possible implementation actually generates the FizzBuzz string up t
 
 ## Benchmark
 
-If you run them (Python 3.9+ required), you'll see that they do a verification routine, then a benchmark routine. The verification is generating 1234567 bytes of FizzBuzz, then testing the first 10000 characters, as well as a random selection of 10000 more characters. The benchmark is printing out every power of 2 index of FizzBuzz, up to 2^20000.
+If you run them (Python 3.9+ required), you'll see that they do a verification routine, then a benchmark routine. The verification is generating 1234567 lines of FizzBuzz, then testing the first 10000 characters, as well as a random selection of 10000 more characters. The benchmark is printing out every power of 2 index of FizzBuzz, up to 2^20000.
 
 The output of running any of the three should be the same. Piping the output to `shasum` should yield `707135a9d41bb63011d45cd2adcf514a3b78db41`. `fizzbuzz.py` does it in 78 seconds, `fizzbuzzpop.py` does it in 85 seconds, and `fizzbuzz_optim.py` does it in 12 seconds. If you comment out the print, so that it computes the same stuff but doesn't spend time on IO, they all get 3 seconds faster.
 
