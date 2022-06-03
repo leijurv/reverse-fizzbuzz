@@ -1,8 +1,37 @@
 # Reverse FizzBuzz
 
-To understand Reverse FizzBuzz, you must first understand normal FizzBuzz.
+Reverse FizzBuzz is the following function: `ReverseFizzBuzz(idx) = chr` means that the `idx`-th character of FizzBuzz is `chr`. See the following example cases:
+
+| `idx`  | `ReverseFizzBuzz(idx)` should equal |
+| - | - |
+| `0` | `"1"` |
+| `1` | `"\n"` |
+| `2` | `"2"` |
+| `3` | `"\n"` |
+| `4` | `"F"` |
+| `5` | `"i"` |
+| `6` | `"z"` |
+| `7` | `"z"` |
+| `8` | `"\n"` |
+| `9` | `"4"` |
+| `10` | `"\n"` |
+| `11` | `"B"` |
+| `12` | `"u"` |
+| `13` | `"z"` |
+| `14` | `"z"` |
+| `15` | `"\n"` |
+| `16` | `"F"` |
+| `17` | `"i"` |
+| `18` | `"z"` |
+| `19` | `"z"` |
+| ... | ... |
+| `2**500000` | `4` |
+
+Did you know that the 2^500000th character of FizzBuzz is `4`? Now you do.
 
 ## Normal FizzBuzz
+
+To understand Reverse FizzBuzz, you must first understand normal FizzBuzz.
 
 Print out the integers, starting at 1. For any that are divisible by three, instead print "Fizz". For any that are divisible by five, instead print "Buzz". For any that are divisible by both three and five, instead print "FizzBuzz".
 
@@ -35,37 +64,6 @@ et cetera...
 ## The problem that motivates Reverse FizzBuzz
 
 You've printed out a few terabytes of FizzBuzz, but suddenly, your program crashes! Or you have a power outage! You don't have enough time to `tail` the file to figure out where it stopped, but you DO have enough time to grab its length (in bytes). If only there was a way to determine the `n`-th character of FizzBuzz, even when `n` is really large, without having to compute all the FizzBuzz up to there!
-
-## Reverse FizzBuzz
-
-Reverse FizzBuzz is the following function: `ReverseFizzBuzz(idx) = chr` means that the `idx`-th character of FizzBuzz is `chr`. See the following example cases:
-
-| `idx`  | `ReverseFizzBuzz(idx)` should equal |
-| - | - |
-| `0` | `"1"` |
-| `1` | `"\n"` |
-| `2` | `"2"` |
-| `3` | `"\n"` |
-| `4` | `"F"` |
-| `5` | `"i"` |
-| `6` | `"z"` |
-| `7` | `"z"` |
-| `8` | `"\n"` |
-| `9` | `"4"` |
-| `10` | `"\n"` |
-| `11` | `"B"` |
-| `12` | `"u"` |
-| `13` | `"z"` |
-| `14` | `"z"` |
-| `15` | `"\n"` |
-| `16` | `"F"` |
-| `17` | `"i"` |
-| `18` | `"z"` |
-| `19` | `"z"` |
-| ... | ... |
-| `2**500000` | `4` |
-
-Did you know that the 2^500000th character of FizzBuzz is `4`? Now you do.
 
 ## This repo
 
