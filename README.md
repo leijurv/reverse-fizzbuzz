@@ -24,12 +24,12 @@ See the following example cases:
 | 10^100000 | `"0"` |
 | 10^1000000 | `"7"` |
 | 10^10000000 | `"7"` |
-| 10^100000000 | ? (my laptop has been running the final integer division to compute this one for the last 5+ hours) |
+| 10^100000000 | `"9"` |
 
-With this repo, you can compute amazing facts like that ^ in a performant manner! (`fizzbuzz_optim_optim.py` generates the above table roughly instantly, except the third to last row takes a little over five seconds, the second to last row takes a little under five minutes, and the last row took hours and still isn't done)
+With this repo, you can compute amazing facts like that ^ in a performant manner! (`fizzbuzz_optim_optim.py` generates the above table roughly instantly, except the third to last row takes a little over five seconds, the second to last row takes a little under five minutes, and the last row took a little under seven hours)
 
 
-**Open challenge: try and compute ReverseFizzBuzz(10^10^8)!** My laptop may or may not finish it lol.
+**Open challenge: try and compute ReverseFizzBuzz(10^10^9)!** The table must grow.
 
 ## Normal FizzBuzz
 
