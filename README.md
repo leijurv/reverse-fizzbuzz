@@ -1,39 +1,37 @@
 # Reverse FizzBuzz
 
-`ReverseFizzBuzz(idx) = chr` means that the `idx`-th character of FizzBuzz is `chr`. See the following example cases:
+Some people attempt to compute the `n`th digit of Pi, where `n` is some huge number. For example, a little while ago Google calculated the 100 trillionth digit of Pi (aka: 10^18). This is the same idea: compute the `n`th character of FizzBuzz, where `n` is huge. But when **I** say "huge" **I** don't mean 10^18, I mean 10^10000000, like I literally mean "1" with ten million "0"s after it.
+
+See the following example cases:
 
 | `idx`  | `ReverseFizzBuzz(idx)` should equal |
 | - | - |
-| `0` | `"1"` |
-| `1` | `"\n"` |
-| `2` | `"2"` |
-| `3` | `"\n"` |
-| `4` | `"F"` |
-| `5` | `"i"` |
-| `6` | `"z"` |
-| `7` | `"z"` |
-| `8` | `"\n"` |
-| `9` | `"4"` |
-| `10` | `"\n"` |
-| `11` | `"B"` |
-| `12` | `"u"` |
-| `13` | `"z"` |
-| `14` | `"z"` |
-| `15` | `"\n"` |
-| `16` | `"F"` |
-| `17` | `"i"` |
-| `18` | `"z"` |
-| `19` | `"z"` |
-| ... | ... |
-| `10**1000000` | `"7"` |
+| 0 | `"1"` |
+| 1 | `"\n"` |
+| 2 | `"2"` |
+| 3 | `"\n"` |
+| 4 | `"F"` |
+| 5 | `"i"` |
+| 6 | `"z"` |
+| 7 | `"z"` |
+| 8 | `"\n"` |
+| 9 | `"4"` |
+| 10^1 | `"\n"` |
+| 10^10 | `"5"` |
+| 10^100 | `"0"` |
+| 10^1000 | `"F"` |
+| 10^10000 | `"6"` |
+| 10^100000 | `"0"` |
+| 10^1000000 | `"7"` |
+| 10^10000000 | `"7"` |
+| 10^100000000 | ? (my laptop has been running the final integer division to compute this one for the last 5+ hours) |
 
-Did you know that the 10^1000000th character of FizzBuzz is `"7"`? Now you do! (yes, that's 10 to the power of a million, meaning the number "1" followed by a million zeros)
+With this repo, you can compute amazing facts like that ^ in a performant manner! (`fizzbuzz_optim_optim.py` generates the above table roughly instantly, except the third to last row takes a little over five seconds, the second to last row takes a little under five minutes, and the last row took hours and still isn't done)
 
-With this repo, you can compute amazing facts like that in a performant manner!
+
+**Open challenge: try and compute ReverseFizzBuzz(10^10^8)!** My laptop may or may not finish it lol.
 
 ## Normal FizzBuzz
-
-To understand Reverse FizzBuzz, you must first understand normal FizzBuzz.
 
 Print out the integers, starting at 1. For any that are divisible by three, instead print "Fizz". For any that are divisible by five, instead print "Buzz". For any that are divisible by both three and five, instead print "FizzBuzz".
 
@@ -63,63 +61,81 @@ Fizz
 
 et cetera...
 
-## The problem that motivates Reverse FizzBuzz
-
-You've printed out a few terabytes of FizzBuzz, but suddenly, your program crashes! Or you have a power outage! You don't have enough time to `tail` the file to figure out where it stopped, but you DO have enough time to grab its length (in bytes). If only there was a way to determine the `n`-th character of FizzBuzz, even when `n` is really large, without having to compute all the FizzBuzz up to there!
-
 ## This repo
 
 The simplest possible implementation actually generates the FizzBuzz string up to the desired index, then returns the relevant character. I didn't write that one since it's boring and slow.
 
-`fizzbuzz.py` is the initial version and it's fairly simple (80 lines of code including comments and blanks). The `ReverseFizzBuzz` function is called `calcIdx`. On my desktop, it does `calcIdx(2**10000)` in about 1.1 seconds, and `calcIdx(2**20000)` in about 7.8 seconds.
+`fizzbuzz.py` is the initial version and it's fairly simple (80 lines of code including comments and blanks). The `ReverseFizzBuzz` function is called `calcIdx`. On my desktop, it does `calcIdx(2**10000)` in about 1.1 seconds, and `calcIdx(2**20000)` in about 7.8 seconds. It's a bit tricky because each FizzBuzz group changes in length as the number of digits in the numbers goes up. For example, the length in characters of the 1-digit numbers is 30, then 378 for 2-digit, then 4260 for 3-digit, then 47400 for 4-digit, etc. (foreshadowing: the hard part will end up being just figuring out what digit length numbers we're printing as of a given index)
 
 `fizzbuzzpop.py` extends the idea to any kind of FizzBuzz. For example, you could add in that any numbers divisible by 7 are "Pop" by uncommenting the relevant line at the top.
 
-`fizzbuzz_optim.py` is the version that's optimized for performance, without becoming TOO complicated (145 lines of code including comments and blanks). This optimization was very interesting, for example I've never before had to cache simple arithmetic operations such as addition, but that's what happens when your integers are tens to hundreds of thousands of bits long. On my desktop, it does `calcIdx(2**10000)` in about 0.03 seconds, `calcIdx(2**20000)` in about 0.053 seconds, `calcIdx(2**50000)` in about 0.17 seconds, `calcIdx(2**100000)` in about 0.53 seconds, `calcIdx(2**200000)` in about 1.81 seconds, and `calcIdx(2**500000)` in about 11.3 seconds. You can go further if you replace both `maxsize=None` with `maxsize=2`, this essentially tells it to throw away work behind it in order to use less RAM (otherwise, I can't get much further than 2^500000 without hitting OOM at 64GB RAM). `calcIdx(2**1000000)` can only be computed this way, took about 25 seconds (it's `"4"`). It reallllly starts to get slow around the 2^2000000 to 2^3000000 range. But that's close to 10 to the 1 million, so I decided to end there (that's roughly 2 to the 3.3 million). So, `calcIdx(10**1000000)` is probably about the limit of it, that came out to `"7"` and took about 5 minutes.
+`fizzbuzz_optim.py` is the first version that's optimized for performance, while still being written generally for any FizzBuzzPop, and without becoming TOO complicated (145 lines of code including comments and blanks). This optimization was very interesting, for example I've never before had to cache simple arithmetic operations such as addition, but that's what happens when your integers are tens to hundreds of thousands of bits long. (edit: deleted some now-irrelevant discussion here, since this file is no longer my state of the art, and the next file now implements every optimization idea I previously had listed in the readme). The highest I've been able to go with this version was `ReverseFizzBuzz(10^10^6) = "7"`, taking about five minutes and needing a lot of RAM.
 
-So, that's the highest I've been able to go, `ReverseFizzBuzz(10^10^6)` is `"7"`. **Open challenge: try and compute ReverseFizzBuzz(10^10^7)!**
-
-Other than the obvious idea of "don't use Python", some optimization ideas might include specializing for the 3,5 case (meaning, where the group length is always 15 lines), trying to come up with a closed form solution for `lenForDigits` (whether specialized for group length 15 or not), writing out an actual performant edge case for when the index is within 15 lines of a power of ten (currently this case is extremely slow), finding a faster way to do `str(someEnormousNumber)[someBigIndexInTheThousands]` (extracting the `n`th decimal digit), caching more data for every given decimal length, etc. God, maybe even I should consider using some library instead of the builtin integers.
+`fizzbuzz_optim_optim.py` is the version that's specialized for just FizzBuzz (no Pop). Specifically, it takes advantage of one beautiful fact: consider the two-digit numbers (10 through 99). There are 90 of them. *That's divisible by 15*, so the FizzBuzz pattern repeats an integer number of times. Same goes for three digit numbers (100 through 999), there are 900 of them, which is divisible by 15. Generally, `10^n - 10^(n-1)` is always divisible by 15. This allows us to do some very fast optimizations: every group of FizzBuzz for d-digit numbers has total length easily computable as `10**(d-2) * (48 * d + 282)`, and even better, we can compute a closed form of this summation (thanks WolframAlpha) as `((415 + 72 * d) * 10**d - 820) // 135`, then binary search on that to compute what digit length of FizzBuzz is currently being printed for any index in log log log time (yes I do mean triple log, see the comments around `binarySearchBitLens`). This version took `ReverseFizzBuzz(10^10^6)` down from five minutes to five seconds, and made possible the next few rows of the table up top.
 
 ## Benchmark
 
 If you run them (Python 3.9+ required), you'll see that they do a verification routine, then a benchmark routine. The verification is generating 1234567 lines of FizzBuzz, then testing the first 10000 characters, as well as a random selection of 10000 more characters. The benchmark is printing out every power of 2 index of FizzBuzz, up to 2^20000.
 
-The output of running any of the three should be the same. Piping the output to `shasum` should yield `707135a9d41bb63011d45cd2adcf514a3b78db41`. `fizzbuzz.py` does it in 78 seconds, `fizzbuzzpop.py` does it in 85 seconds, and `fizzbuzz_optim.py` does it in 12 seconds. If you comment out the print, so that it computes the same stuff but doesn't spend time on IO, they all get 3 seconds faster.
+| File | Time to perform this benchmark (on my laptop) |
+| - | - |
+| `fizzbuzz.py` | ~75 seconds |
+| `fizzbuzzpop.py` | ~85 seconds |
+| `fizzbuzz_optim.py` | ~7.5 seconds |
+| `fizzbuzz_optim_optim.py` | ~1.36 seconds |
+
+The stdout of running any of the four should be the same.
+
+`fizzbuzz_optim_optim.py` then shows off by doing some stuff that the other versions can't do (but this showoff stuff goes to stderr so as not to mess up the shasum).
 
 The output should be:
 
 ```
 Verified
-Character 1 of FizzBuzz is 
+Character 2^0 of FizzBuzz is 
 
-Character 2 of FizzBuzz is 2
-Character 4 of FizzBuzz is F
-Character 8 of FizzBuzz is 
+Character 2^1 of FizzBuzz is 2
+Character 2^2 of FizzBuzz is F
+Character 2^3 of FizzBuzz is 
 
-Character 16 of FizzBuzz is F
-Character 32 of FizzBuzz is z
-Character 64 of FizzBuzz is F
-Character 128 of FizzBuzz is i
-Character 256 of FizzBuzz is z
-Character 512 of FizzBuzz is 1
-Character 1024 of FizzBuzz is B
-Character 2048 of FizzBuzz is 6
-Character 4096 of FizzBuzz is i
-Character 8192 of FizzBuzz is 
+Character 2^4 of FizzBuzz is F
+Character 2^5 of FizzBuzz is z
+Character 2^6 of FizzBuzz is F
+Character 2^7 of FizzBuzz is i
+Character 2^8 of FizzBuzz is z
+Character 2^9 of FizzBuzz is 1
+Character 2^10 of FizzBuzz is B
+Character 2^11 of FizzBuzz is 6
+Character 2^12 of FizzBuzz is i
+Character 2^13 of FizzBuzz is 
 
-Character 16384 of FizzBuzz is 
+Character 2^14 of FizzBuzz is 
 
-Character 32768 of FizzBuzz is u
-Character 65536 of FizzBuzz is 1
-Character 131072 of FizzBuzz is 2
-Character 262144 of FizzBuzz is 9
-Character 524288 of FizzBuzz is 1
-Character 1048576 of FizzBuzz is 4
-Character 2097152 of FizzBuzz is 8
-Character 4194304 of FizzBuzz is F
-Character 8388608 of FizzBuzz is 0
-Character 16777216 of FizzBuzz is 4
+Character 2^15 of FizzBuzz is u
+Character 2^16 of FizzBuzz is 1
+Character 2^17 of FizzBuzz is 2
+Character 2^18 of FizzBuzz is 9
+Character 2^19 of FizzBuzz is 1
+Character 2^20 of FizzBuzz is 4
+Character 2^21 of FizzBuzz is 8
+Character 2^22 of FizzBuzz is F
+Character 2^23 of FizzBuzz is 0
+Character 2^24 of FizzBuzz is 4
 ```
 
-et cetera, all the way up to `Character 199013842016898329617715360309560122685238639024621296935671343282619317987465028521338004874987797755418230568752456351415700188467659571810876735207913512990607641213446749112413307988853797769733480509794349863386139865970657599091393632017426410600082283063965195355199091489967663859008436892410674758203057491458345933680937685012272936070396913638741281412096219618900794348907084260169325045454848767983262516378524715143229741488678686799010225294963659182831538359568467066296563380953348001885192652642285165559845500763292173861006193190940889712774605425848229126971789278849536077319827815396941970980689485923420556902094365129451919551834813043487234075327855240420796232827605902628931503905838444419777508768365879056724328376257079300722025822577332757194215809521198053358377881169364091730684927324461986452213778079410911889364596555726722922108489547717522889072285689477326061198030807573821270125372928614446999937745812507473006919670445663030466950518124999619318913788887333322404867016930809710181968232589365459616836557122281957529219498312917056066483999247788124660231435873888506082771943578127929179392426167530287440938276012842852411884039355409475930370689714621055427822486988710206905186757292252003448196337927498933435409282103619541937162476935638187858050753287576602873681981870374933757341309878387767253503435742943906201463869113788317642087123494270392987620010240633426538063586114012165280775060091004388799115271016851231704158335560443084630467003402899932299318155589893888369304496173031531549829824139831939087037393589618584876478523202292262650692076679172027954109847927426092605369880730275798329105506579957704783072713404868775208789114232917915445147248767731556040768836332028445812172889655762280009992157728071063141449243364172502383936749876341735704793683725296651196153954002295322377006268556660246800841066854659111323744540265822007660695578693589116077063414003880156858436121104807100483761090237858099986844733857005202336980727073233022927616108598343832571573806099575960638716154850230160715190766692622938715665266739738076169682251718161459832815521164370231806282921280205973510087003253946698138051917218116570457512695507193059600588231329778194171529300163355309451841873258288510607138466644589510529978462974858978020428989582957085485028106434966796794634313075998338297185400442546524115343576401606627367797370899538019726528636159942161170941620518191308799200944719565150938487749340868087107855643526723506855798002287401781350694123411255195761209530660331870460660877172083372449794080324645911767991693012952471020362290508807984214788507904045180484272029602297100034652306208683199388415766132798112357875150896103862803966267271846879386131005193680217783817616359171710339846528680002036839746504472906980506219787198686589318027314103823760337597210122135518171864659429215435730989433482386181028645288663040332231564828795124929874272050666921046356826548328033133413723039572795098322321708701861610042848101359660766616513584799867464485794425174207500035017013512649091552074171990148831574485793303951885858940341587718222792905305273441036785778081162329675655163280402224487114674871712818582417121399995713572525449734755977417387423586180346784218844573699727836045386843391255527145592586190958504444978822655669975496522389891803570296883254008967996290678929153262651891615876212621004173922433994166512708624972046059289056843701579081353537577003026708187037882581334266563539302658281413168596803121267645341612211830231111204340150249357074803632775220610369037970816994217525797243628401437091132407212961555596594140316006563901448944802669391544766370438601152061249096812727384171887767749436410549990810248535405244568728553446286624249367121858592400411478167234707833409429036609326988977154511591425861623261021396200730691000800960250642219662607042105368200315442464971136491471806854061505677630457772915521580121761799686003113075144832491056972449443305355412477548362313447708242260909513066088820299345829017993142688177516859547284041561109672861031806804889579169042187665715638263774241283105035673872270646435938067382124852429920475138113813664448712104466494057554453593823849245907187819807156589046264339003685022935874109210893198098642106604511311881367315418003432096207302618624491644503452634494237598799890762079456791850662599545176137126304171485651953834681522828116091989377926532002005447515417460994300677600590579438627403899029317563854222796032259781557547374638303348779764666403610707010512452620894487458877517350255216019945098696845861455563444587197156063627396570812487915214548998852765890954121041961034384513677564606308622065320144997388706513312006578664974166793188977551597922408581911242116350381929645126700188257850993376798445037909272242737892890015921789532877047549985470252320106425404998525564488281940443196205383160724993764845231631091447136151374577267723616665514420607607766801199140553525348008753913801380773908162371648969088602091882910558909434979897515924100661218026551889496770692389928631155732947877042769185984520461210468457538326750155087503094286009508679150489528496080979143441287992165929085428651680634945656397184622448270161596225839415334090227529644871790320368038116780967944054762922901562956194482762083409927988530699521749614921758965084559018406230397307833904480800194889153270162424643250757646399695652255498649064114129003078008694939043136394996660708174602960817848481851779485695561587438676878768387006657517478471392201912090775870814590329207040952825166836319491708393194047513084748302599874845797899417973594888911382599383974849889053341931494551548003252932635501783173095691203005836979202004597426055008457611216729820893585458936070183935511798232025823973694290285387231152173948100838098597760714391156804291857199619046104181466605651471403240087794701193988265540218453428417188672068849090394781322987187077700248877421952516115594126062901090176788755259934785337617446160831703154688 of FizzBuzz is 3`
+...
+
+```
+Character 2^19990 of FizzBuzz is 7
+Character 2^19991 of FizzBuzz is 7
+Character 2^19992 of FizzBuzz is 1
+Character 2^19993 of FizzBuzz is 0
+Character 2^19994 of FizzBuzz is 2
+Character 2^19995 of FizzBuzz is 3
+Character 2^19996 of FizzBuzz is 5
+Character 2^19997 of FizzBuzz is 7
+Character 2^19998 of FizzBuzz is 0
+Character 2^19999 of FizzBuzz is 3
+```
+
+Piping the output to `shasum` should yield `7cbcd72e6c37e26435f7ba85c6a51306cc1eec82`.

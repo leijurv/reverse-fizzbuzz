@@ -1,6 +1,10 @@
+import time
+start = time.time()
 import functools
 import random
 import math
+import sys
+sys.set_int_max_str_digits(10**7)
 
 replies = {
 	3: "Fizz",
@@ -110,9 +114,11 @@ if True: # benchmark routine
 	for i in range(20000):
 		#print(i)
 		c = calcIdx(2**i)
-		print("Character", 2**i, "of FizzBuzz is", c)
+		print("Character", "2^" + str(i), "of FizzBuzz is", c)
 		verify += c
 	#print(verify)
+	end = time.time()
+	print("bench routine took", end-start, "seconds", file=sys.stderr)
 
 if False:
 	random.seed(137)
