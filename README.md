@@ -1,6 +1,6 @@
 # Reverse FizzBuzz
 
-Some people attempt to compute the `n`th digit of Pi, where `n` is some huge number. For example, a little while ago Google calculated the 100 trillionth digit of Pi (aka: 10^18). This is the same idea: compute the `n`th character of FizzBuzz, where `n` is huge. But when **I** say "huge" **I** don't mean 10^18, I mean 10^10000000, like I literally mean "1" with ten million "0"s after it.
+Some people attempt to compute the `n`th digit of Pi, where `n` is some huge number. For example, a little while ago Google calculated the 100 trillionth digit of Pi (aka: 10^18). This is the same idea: compute the `n`th character of FizzBuzz, where `n` is huge. But when **I** say "huge" **I** don't mean 10^18, I mean 10^10000000000, like I literally mean "1" with ten billion "0"s after it.
 
 See the following example cases:
 
@@ -25,11 +25,23 @@ See the following example cases:
 | 10^1000000 | `"7"` |
 | 10^10000000 | `"7"` |
 | 10^100000000 | `"9"` |
+| 10^1000000000 | `"3"` |
+| 10^10000000000 | `"1"` |
 
-With this repo, you can compute amazing facts like that ^ in a performant manner! (`fizzbuzz_optim_optim.py` generates the above table roughly instantly, except the third to last row takes a little over five seconds, the second to last row takes a little under five minutes, and the last row took a little under seven hours)
+With this repo, you can compute amazing facts like that ^ in a performant manner!
+
+Time to calculate those last few rows on my laptop:
+
+| `idx`  | `ReverseFizzBuzz(idx)` should equal | Time in `fizzbuzz_optim_optim.py` | Time in `fizzbuzz.nb` |
+| - | - | - | - |
+| 10^1000000 | `"7"` | Five seconds | 0.04 seconds |
+| 10^10000000 | `"7"` | Four minutes | 0.4 seconds |
+| 10^100000000 | `"9"` | Seven hours | Five seconds |
+| 10^1000000000 | `"3"` | ? | 70 seconds
+| 10^10000000000 | `"1"` | ? | 13 minutes (and 43 gigabytes of RAM) |
 
 
-**Open challenge: try and compute ReverseFizzBuzz(10^10^9)!** The table must grow.
+**Open challenge: try and compute ReverseFizzBuzz(10^10^11)!** The table must grow.
 
 ## Normal FizzBuzz
 
@@ -72,6 +84,8 @@ The simplest possible implementation actually generates the FizzBuzz string up t
 `fizzbuzz_optim.py` is the first version that's optimized for performance, while still being written generally for any FizzBuzzPop, and without becoming TOO complicated (145 lines of code including comments and blanks). This optimization was very interesting, for example I've never before had to cache simple arithmetic operations such as addition, but that's what happens when your integers are tens to hundreds of thousands of bits long. (edit: deleted some now-irrelevant discussion here, since this file is no longer my state of the art, and the next file now implements every optimization idea I previously had listed in the readme). The highest I've been able to go with this version was `ReverseFizzBuzz(10^10^6) = "7"`, taking about five minutes and needing a lot of RAM.
 
 `fizzbuzz_optim_optim.py` is the version that's specialized for just FizzBuzz (no Pop). Specifically, it takes advantage of one beautiful fact: consider the two-digit numbers (10 through 99). There are 90 of them. *That's divisible by 15*, so the FizzBuzz pattern repeats an integer number of times. Same goes for three digit numbers (100 through 999), there are 900 of them, which is divisible by 15. Generally, `10^n - 10^(n-1)` is always divisible by 15. This allows us to do some very fast optimizations: every group of FizzBuzz for d-digit numbers has total length easily computable as `10**(d-2) * (48 * d + 282)`, and even better, we can compute a closed form of this summation (thanks WolframAlpha) as `((415 + 72 * d) * 10**d - 820) // 135`, then binary search on that to compute what digit length of FizzBuzz is currently being printed for any index in log log log time (yes I do mean triple log, see the comments around `binarySearchBitLens`). This version took `ReverseFizzBuzz(10^10^6)` down from five minutes to five seconds, and made possible the next few rows of the table up top.
+
+Finally, I took all the learnings from `fizzbuzz_optim_optim.py` and ported them to Mathematica because I suspected its extremely large precision integers would work well (I've used them before). I was correct, and `ReverzeFizzBuzz(10^10^8)` took seven hours in `fizzbuzz_optim_optim.py` but only five seconds in Mathematica. I used it to compute `ReverzeFizzBuzz(10^10^9)` and `ReverzeFizzBuzz(10^10^10)`.
 
 ## Benchmark
 
