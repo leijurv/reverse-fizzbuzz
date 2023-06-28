@@ -153,3 +153,59 @@ Character 2^19999 of FizzBuzz is 3
 ```
 
 Piping the output to `shasum` should yield `7cbcd72e6c37e26435f7ba85c6a51306cc1eec82`.
+
+
+## The Mathematica code
+`fizzbuzz.nb` is impossible to read without Mathematica, so I'll paste the main here as convenience / for curiosity.
+
+```
+CumulativeLen[d_] := 
+ Block[{}, If[d < 1, Print["won't be right"]]; 
+  If[d == 1, 30, Quotient[(415 + 72*d)*10^d - 820, 135]]]; hardcoded =
+  Characters[
+  "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\n"];(*the one-digit numbers \
+are an exception because there are ten of them, which isn't divisible \
+by 15. but the quantity of two digit numbers IS divisible by 15, as \
+is the quantity of every subsequent digit length*)If[
+ Length[hardcoded] != CumulativeLen[1], Print["bad data"]]; charsFor =
+  Characters /@ {"Buzz", "", "Fizz", "", "", "FizzBuzz", "", "", 
+   "Fizz", "", "Buzz", "Fizz", "", "", "Fizz"}; charsUpToIncl = {5, 6,
+   11, 12, 13, 22, 23, 24, 29, 30, 35, 40, 41, 42, 
+  47}; numsUpToIncl = {0, 1, 1, 2, 3, 3, 4, 5, 5, 6, 6, 6, 7, 8, 8}; 
+LenFrom[maxExcl_, d_] := 
+ If[maxExcl == 0, 0, 
+  charsUpToIncl[[maxExcl]] + numsUpToIncl[[maxExcl]]*d]; 
+ExtractDigit[indexIntoGroup_, d_] := 
+ Block[{lo}, lo = 0; 
+  While[indexIntoGroup >= LenFrom[lo, d], lo = lo + 1]; lo - 1]; 
+CalcDForIdx[idx_] := 
+ Block[{d, lo, hi, mid}, lo = 1; hi = 1; 
+  While[CumulativeLen[hi] <= idx, hi *= 2]; 
+  While[lo < hi - 1, mid = Quotient[lo + hi, 2]; 
+   If[CumulativeLen[mid] > idx, hi = mid, lo = mid]]; d = lo; 
+  While[CumulativeLen[d] <= idx, d += 1]; d]; 
+ReverseFizzBuzzKnowingDigitLength[idx_, d_] := 
+ Block[{newIdx, lenOfEachGroup, qr, whichGroup, indexIntoGroup, 
+   groupStart, actual, lo}, 
+  If[idx < Length[hardcoded], Return[hardcoded[[idx + 1]]]];
+  If[CumulativeLen[d] <= idx, Print["bad data (d is too low)"]; 
+   Return[]];
+  If[CumulativeLen[d - 1] > idx, Print["bad data (d is too high)"]; 
+   Return[]];
+  newIdx = idx - CumulativeLen[d - 1];
+  lenOfEachGroup = LenFrom[15, d];
+  qr = QuotientRemainder[newIdx, lenOfEachGroup];
+  whichGroup = qr[[1]];
+  indexIntoGroup = qr[[2]];
+  groupStart = 10^(d - 1) + whichGroup*15;
+  lo = ExtractDigit[indexIntoGroup, d];
+  If[indexIntoGroup == LenFrom[lo + 1, d] - 1, Return["\n"]];
+  indexIntoGroup = indexIntoGroup - LenFrom[lo, d];
+  If[Length[charsFor[[lo + 1]]] > 0, 
+   Return[charsFor[[lo + 1]][[indexIntoGroup + 1]]]];
+  actual = groupStart + lo;
+  Mod[Quotient[actual, 10^(d - indexIntoGroup - 1)], 10]
+  ];
+ ReverseFizzBuzz[idx_] := 
+ ReverseFizzBuzzKnowingDigitLength[idx, CalcDForIdx[idx]]
+ ```
